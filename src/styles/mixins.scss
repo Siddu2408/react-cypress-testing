@@ -1,0 +1,60 @@
+$z-index-stack: ();
+
+@mixin z-index($name, $value) {
+  $z-index-stack: map-merge(
+    $z-index-stack,
+    (
+      $name: $value,
+    )
+  );
+}
+
+@function z($name) {
+  @return map-get($z-index-stack, $name);
+}
+
+@include z-index("header", 100);
+@include z-index("footer", 10);
+@include z-index("modal", 999);
+
+//Usage -   z-index: z("header");
+
+$breakpoints: (
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+);
+
+@function breakpoint($point) {
+  @return map-get($breakpoints, $point);
+}
+
+@mixin media-breakpoint-up($point) {
+  @media (min-width: breakpoint($point)) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-down($point) {
+  @media (max-width: (breakpoint($point) - 1)) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-between($start, $end) {
+  @media (min-width: breakpoint($start)) and (max-width: (breakpoint($end) - 1)) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-only($point) {
+  @media (min-width: breakpoint($point)) and (max-width: breakpoint($point)) {
+    @content;
+  }
+}
+
+/* @include media-breakpoint-up("md") {
+    font-size: 20px;
+  } 
+/*
